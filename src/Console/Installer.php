@@ -32,6 +32,18 @@ use Exception;
  */
 class Installer
 {
+
+  public const CONFIGS = [
+    [
+      "source" => "app_local.example.php",
+      "destination" => "app_local.php"
+    ],
+    [
+      "source" => ".env.example",
+      "destination" => ".env"
+    ]
+  ];
+
     /**
      * An array of directories to be made writable
      *
@@ -81,12 +93,16 @@ class Installer
      */
     public static function createAppLocalConfig(string $dir, IOInterface $io): void
     {
-        $appLocalConfig = $dir . '/config/app_local.php';
-        $appLocalConfigTemplate = $dir . '/config/app_local.example.php';
-        if (!file_exists($appLocalConfig)) {
-            copy($appLocalConfigTemplate, $appLocalConfig);
-            $io->write('Created `config/app_local.php` file');
-        }
+
+    foreach (static::CONFIGS as $config) {
+      $appLocalConfig = $dir . "/config/{$config['destination']}";
+      $appLocalConfigTemplate = $dir . "/config/{$config['source']}";
+      if (!file_exists($appLocalConfig)) {
+        copy($appLocalConfigTemplate, $appLocalConfig);
+        $io->write("Created `config/{$config['destination']}` file");
+      }
+    }
+
     }
 
     /**
@@ -184,7 +200,10 @@ class Installer
     public static function setSecuritySalt(string $dir, IOInterface $io): void
     {
         $newKey = hash('sha256', Security::randomBytes(64));
-        static::setSecuritySaltInFile($dir, $io, $newKey, 'app_local.php');
+
+        foreach (static::CONFIGS as $config) {
+        static::setSecuritySaltInFile($dir, $io, $newKey, $config['destination']);
+        }
     }
 
     /**
