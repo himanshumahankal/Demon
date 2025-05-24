@@ -47,6 +47,7 @@ class Application extends BaseApplication
     {
         // Call parent to load bootstrap from files.
         parent::bootstrap();
+        Configure::write('Users.config', ['app_local']);
 
         if (PHP_SAPI !== 'cli') {
             FactoryLocator::add(

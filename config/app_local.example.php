@@ -91,4 +91,8 @@ return [
             'url' => env('EMAIL_TRANSPORT_DEFAULT_URL', null),
         ],
     ],
+    'Users.Social.login' => true,
+    'Users.Registration.active' => false,
+    'OAuth.providers.google.options.clientId' => '',
+    'OAuth.providers.google.options.clientSecret' => '',
 ];
